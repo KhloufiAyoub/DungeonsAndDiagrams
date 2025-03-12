@@ -1,13 +1,12 @@
-from flask import Flask
+from flask import Flask, render_template
 import psycopg
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
+def login():
+    return render_template("login.html")
 
 if __name__ == '__main__':
     app.run()
