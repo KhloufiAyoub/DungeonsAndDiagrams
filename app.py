@@ -1,5 +1,5 @@
 import psycopg, re,hashlib
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
@@ -57,6 +57,18 @@ def submit():
     except Exception as e:
         return f"Le problème en question : {str(e)}"
 
+@app.route('/init', methods=['POST'])
+def init():
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT lvl, hinth, hintv FROM levels WHERE lid = 1")
+            level = cursor.fetchone()
+            if level:
+                return jsonify(level)
+            else:
+                return jsonify({"error": "No level found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

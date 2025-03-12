@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>DungeonsAndDiagrams</title>
     <link href="../static/game.css" rel="stylesheet">
+    <script src="../static/game.js" DEFER></script>
 </head>
 <body>
 <h1>bababababababaalsalsaasasasaLASCARdjdjdd</h1>
@@ -20,7 +21,7 @@
     <tr>
         <td>{{ hintv[i]}}</td>
         {% for j in range(8) %}
-            <td id="{i}{j}" class="floor"></td>
+            <td id="{{i}}-{{j}}" class="floor"></td>
         {% endfor %}
     </tr>
 {% endfor %}
