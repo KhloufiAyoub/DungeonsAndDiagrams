@@ -1,0 +1,34 @@
+# Fichiers et dossiers spécifiques à Python
+__pycache__/
+*.py[cod]
+*.so
+*.log
+*.sqlite3
+*.db
+
+# Environnements virtuels
+venv/
+env/
+*.env
+.env.*
+
+# Configuration de PyCharm
+.idea/
+*.iml
+
+# Dépendances installées
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Fichiers de tests et de couverture
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+test-reports/
+
+# Caches et fichiers temporaires
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
