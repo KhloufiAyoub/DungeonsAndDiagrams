@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DungeonsAndDiagrams</title>
+    <link href="../static/game.css" rel="stylesheet">
+</head>
+<body>
+<h1>bababababababaalsalsaasasasaLASCARdjdjdd</h1>
+
+<table class="bordered-table">
+<tr>
+    <td></td>
+    {% for i in range(8) %}
+        <td>{{ hinth[i]}}</td>
+    {% endfor %}
+
+</tr>
+{% for i in range(8) %}
+    <tr>
+        <td>{{ hintv[i]}}</td>
+        {% for j in range(8) %}
+            <td id="{i}{j}" class="floor"></td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

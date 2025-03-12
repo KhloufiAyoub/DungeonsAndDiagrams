@@ -1,0 +1,31 @@
+.bordered-table {
+    border-collapse: collapse;
+}
+
+.bordered-table td, .bordered-table th {
+    border: 1px solid black;
+    padding: 8px;
+    width: 50px;
+    height: 50px;
+}
+
+.bordered-table th {
+    background-color: #f2f2f2;
+}
+
+.floor {
+    background-image: url('../static/img/Empty.png');
+    background-size: cover;
+}
+
+
+.wall {
+    background-image: url('../static/img/Wall.png');
+    background-size: cover;
+}
+
+
+.chest {
+    background-image: url('../static/img/Trunk.png');
+    background-size: cover;
+}
