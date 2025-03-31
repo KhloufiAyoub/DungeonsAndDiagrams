@@ -7,25 +7,28 @@
     <script src="../static/game.js" DEFER></script>
 </head>
 <body>
-<h1>bababababababaalsalsaasasasaLASCARdjdjdd</h1>
+<h1 id="titre
+"></h1>
 
 <table class="bordered-table">
-<tr>
-    <td></td>
-    {% for i in range(8) %}
-        <td>{{ hinth[i]}}</td>
-    {% endfor %}
-
-</tr>
-{% for i in range(8) %}
     <tr>
-        <td>{{ hintv[i]}}</td>
-        {% for j in range(8) %}
-            <td id="{{i}};{{j}}"></td>
+        <td></td>
+        {% for i in range(8) %}
+            <td id="col-{{i}}"></td>
         {% endfor %}
+
     </tr>
-{% endfor %}
+    {% for i in range(8) %}
+        <tr>
+            <td id="row-{{i}}"></td>
+            {% for j in range(8) %}
+                <td id="{{i}};{{j}}"></td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
 </table>
+
+<button id="nextLevelBtn" style="display:none;">Suivant</button>
 
 </body>
 </html>
