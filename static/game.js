@@ -10,6 +10,8 @@ var grid = [
 ]
 var hinth,hintv
 
+loadGame()
+
 function loadGame(){
     var url="/init";
     var xhr= new XMLHttpRequest();
