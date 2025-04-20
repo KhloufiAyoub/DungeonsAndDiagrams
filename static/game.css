@@ -5,8 +5,8 @@
 .bordered-table td, .bordered-table th {
     border: 1px solid black;
     padding: 8px;
-    width: 50px;
-    height: 50px;
+    width: 58px;
+    height: 58px;
 }
 
 .bordered-table th {
@@ -14,24 +14,23 @@
 }
 
 .floor {
-    background-image: url('../static/img/Empty.png');
+    background-image: url('../static/img/piece.png');
     background-size: cover;
 }
 
 
 .wall {
-    background-image: url('../static/img/Wall.png');
+    background-image: url('../static/img/brique.png');
     background-size: cover;
 }
 
 
 .chest {
-    background-image: url('../static/img/Trunk.png');
+    background-image: url('../static/img/lucky.png');
     background-size: cover;
 }
 
 .monster {
-    background-image: none;
+    background-image: url('../static/img/monstre.png');
     background-size: cover;
-    background: red;
 }
