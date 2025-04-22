@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../static/levels.css" rel="stylesheet">
+</head>
+<body>
+
+<h1>Choose your level</h1>
+<form action="/game" method="POST">
+    <label for="level">Level:</label>
+    <select id="level" name="level">
+        {% for level in levels %}
+            <option value="{{ level[0] }}">{{ level[1] }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Start Game</button>
+</form>
+
+
+</body>
+</html>

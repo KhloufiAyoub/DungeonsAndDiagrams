@@ -9,6 +9,8 @@ var grid = [
     [0,0,0,0,0,0,0,0],
 ]
 var hinth,hintv
+var submitlvl = document.getElementById("submitlvl");
+submitlvl.addEventListener("click",SubmitLvl)
 
 loadGame()
 
@@ -103,11 +105,11 @@ function CheckNumbers() {
             }
         }
         if(cptv !== parseInt(hintv[i]) || cpth !== parseInt(hinth[i])){
-            document.getElementById("nextLevelBtn").style.display = "none";
+            document.getElementById("submitlvl").style.display = "none";
             return
         }
     }
-    document.getElementById("nextLevelBtn").style.display = "block";
+    document.getElementById("submitlvl").style.display = "block";
 }
 function UpdateNumbers(row, col){
     var cptRow =0
@@ -130,4 +132,32 @@ function UpdateNumbers(row, col){
     }else {
         document.getElementById("col-" + col).style.color = "red";
     }
+}
+
+function SubmitLvl(){
+    var url="/submitlvl";
+    var xhr= new XMLHttpRequest();
+    var gridStr = "";
+    for (var i = 0; i < grid.length; i++) {
+        for (var j = 0; j < grid[i].length; j++) {
+            gridStr += grid[i][j];
+        }
+    }
+    var params = "grid=" + encodeURIComponent(gridStr);
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState === 4 && xhr.status === 200){
+            console.log(JSON.parse(xhr.response))
+            var response = JSON.parse(xhr.response)
+            if(response["message"] === "Level completed") {
+                alert("Bravo ! Niveau terminé")
+                window.location.href = "/levels";
+            }else if(response["message"] === "Incorrect answer") {
+                alert("Le niveau n'est pas terminé")
+            }
+        }
+    }
+    xhr.open("POST",url,true);
+    xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    xhr.send(params);
+
 }
