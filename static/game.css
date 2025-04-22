@@ -1,16 +1,46 @@
+body {
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #87ceeb 0%, #ffffff 100%); /* Ciel bleu Mario */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #ff4500;
+    text-shadow: 2px 2px #ffffff;
+    text-align: center; /* Centrer le titre */
+    width: 100%; /* Assurer que le titre prend toute la largeur pour un centrage correct */
+}
+
 .bordered-table {
     border-collapse: collapse;
+    background-color: #d3d3d3; /* Gris clair pour contraste avec les pièces jaunes */
+    border-radius: 15px;
+    border: 5px solid #ff4500;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin: 0 auto; /* Centrer la grille horizontalement */
 }
 
 .bordered-table td, .bordered-table th {
-    border: 1px solid black;
+    border: 2px solid #006400;
     padding: 8px;
     width: 58px;
     height: 58px;
+    text-align: center;
+    font-weight: bold;
+    color: #ff4500;
+    text-shadow: 1px 1px #ffffff;
+    transition: background-color 0.2s;
 }
 
 .bordered-table th {
-    background-color: #f2f2f2;
+    background-color: #ffeb3b; /* Jaune plus clair */
 }
 
 .floor {
@@ -18,12 +48,10 @@
     background-size: cover;
 }
 
-
 .wall {
     background-image: url('../static/img/brique.png');
     background-size: cover;
 }
-
 
 .chest {
     background-image: url('../static/img/lucky.png');
@@ -33,4 +61,24 @@
 .monster {
     background-image: url('../static/img/monstre.png');
     background-size: cover;
+}
+
+button#submitlvl {
+    background-color: #ff4500;
+    color: white;
+    padding: 10px 20px;
+    border: 3px solid #006400;
+    border-radius: 10px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    display: block; /* Permet de centrer avec margin */
+    margin-left: auto;
+    margin-right: auto; /* Centrer le bouton */
+}
+
+button#submitlvl:hover {
+    background-color: #ff6347;
 }
