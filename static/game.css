@@ -82,3 +82,18 @@ button#submitlvl {
 button#submitlvl:hover {
     background-color: #ff6347;
 }
+
+#timer {
+    font-size: 24px;
+    color: #ff4500; /* Rouge Mario pour correspondre au thème */
+    text-shadow: 2px 2px #ffffff; /* Ombre comme dans h1 */
+    background-color: #ffd700; /* Fond jaune Mario */
+    padding: 10px 20px; /* Espacement interne */
+    border: 4px solid #006400; /* Bordure verte */
+    border-radius: 10px; /* Coins arrondis */
+    margin: 0 auto 20px auto; /* Centrage horizontal avec margin auto, suivi de margin-bottom */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère */
+    text-align: center; /* Centrer le texte à l'intérieur */
+    width: 200px; /* Largeur fixe pour une présentation propre */
+    display: block; /* Assure que margin: 0 auto fonctionne */
+}

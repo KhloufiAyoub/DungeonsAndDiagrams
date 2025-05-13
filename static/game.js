@@ -12,6 +12,9 @@ var hinth,hintv
 var submitlvl = document.getElementById("submitlvl");
 submitlvl.addEventListener("click",SubmitLvl)
 
+let startTime = null;
+let timerInterval = null;
+
 loadGame()
 
 function loadGame(){
@@ -20,11 +23,26 @@ function loadGame(){
     xhr.onreadystatechange = function(){
         if (xhr.readyState === 4 && xhr.status === 200){
             initializeGrid(JSON.parse(xhr.response))
+            startTimer();
         }
     }
     xhr.open("POST",url,true);
     xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
     xhr.send();
+}
+
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    if (!startTime) return;
+    var elapsed = Math.floor((Date.now() - startTime) / 1000); // Temps écoulé en secondes
+    var minutes = Math.floor(elapsed / 60);
+    var seconds = elapsed % 60;
+    var formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    document.getElementById('timer').innerText = `Temps : ${formattedTime}`;
 }
 
 function initializeGrid(str) {
@@ -145,19 +163,23 @@ function SubmitLvl(){
     }
     var params = "grid=" + encodeURIComponent(gridStr);
     xhr.onreadystatechange = function(){
-        if (xhr.readyState === 4 && xhr.status === 200){
-            console.log(JSON.parse(xhr.response))
-            var response = JSON.parse(xhr.response)
-            if(response["message"] === "Level completed") {
-                alert("Bravo ! Niveau terminé")
-                window.location.href = "/levels";
-            }else if(response["message"] === "Incorrect answer") {
-                alert("Le niveau n'est pas terminé")
+        if (xhr.readyState === 4){
+            if (xhr.status === 200){
+                var response = JSON.parse(xhr.response);
+                if(response["message"] === "Level completed") {
+                    alert("Bravo ! Niveau terminé");
+                    window.location.href = "/levels";
+                } else if(response["message"] === "Incorrect answer") {
+                    alert("Le niveau n'est pas terminé");
+                } else {
+                    alert("Erreur : " + response["message"]);
+                }
+            } else {
+                alert("Erreur serveur lors de la soumission");
             }
         }
     }
     xhr.open("POST",url,true);
     xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
     xhr.send(params);
-
 }

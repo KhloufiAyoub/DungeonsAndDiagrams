@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meilleurs Scores</title>
+    <link rel="stylesheet" href="/static/scores.css">
+</head>
+<body>
+<h1>
+    {% if level_name %}
+        Meilleurs scores pour {{ level_name }}
+    {% else %}
+        Meilleurs scores globaux
+    {% endif %}
+</h1>
+
+{% if error %}
+    <p class="error">{{ error }}</p>
+{% endif %}
+
+{% if scores %}
+    <table class="bordered-table">
+        <thead>
+        <tr>
+            <th>Classement</th>
+            <th>Utilisateur</th>
+            {% if level_name %}
+                <th>Temps (secondes)</th>
+            {% else %}
+                <th>Niveaux résolus</th>
+                <th>Temps moyen (secondes)</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for score in scores %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ score[0] }}</td>
+                {% if level_name %}
+                    <td>{{ score[1] }}</td>
+                {% else %}
+                    <td>{{ score[1] }}</td>
+                    <td>{{ score[2] | round(2) if score[2] else 'N/A' }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun score disponible.</p>
+{% endif %}
+
+<a href="/levels">Retour aux niveaux</a>
+</body>
+</html>
