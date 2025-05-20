@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>DungeonsAndDiagrams</title>
-    <link href="../static/login.css" rel="stylesheet">
 </head>
 <body>
-<form action="/submitlogin" method="POST">
-    <h1>Login form</h1>
+<form action="/submitregister" method="POST">
+    <h1>Register from</h1>
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
 
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
 
-    <button type="submit">Login</button>
+    <label for="confirm_password">Confirm password:</label>
+    <input type="password" id="confirm_password" name="confirm_password" required>
+
+    <button  type="submit">Register</button>
 
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
 </form>
-
-<p>Pas encore de compte ? <a href="/register">Inscrivez-vous ici</a></p>
+<p>Déjà inscrit ? <a href="/">Connectez-vous ici</a></p>
 </body>
 </html>

@@ -9,58 +9,72 @@ conn = psycopg.connect(
     "dbname=py2501 user=py2501 password=cruipi72failou host=student.endor.be port=5433"
 )
 
-cursor = conn.cursor()
-
 @app.route('/')
 def home():
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
 
 @app.route('/submitlogin', methods=['POST'])
 def submitlogin():
     session["level_id"] = None
     session["user_id"] = None
-    try:
-        if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
+    username = request.form['username']
+    password = request.form['password']
 
-            error = 0
+    with conn.cursor() as cursor1:
+        cursor1.execute("SELECT lid, name FROM levels")
+        levels = cursor1.fetchall()
 
-            if re.match("/<script/i", username) or re.match("/<script/i", password):
-                error+=1
-
-            if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{0,15}$", username) or not re.match(r"^[a-zA-Z][a-zA-Z0-9_]{0,15}$", password):
-                error+=1
-
-            if error == 0:
-                with conn.cursor() as cursor1:
-                    cursor1.execute("SELECT lid, name FROM levels")
-                    levels = cursor1.fetchall()
-
-                    with conn.cursor() as cursor:
-                        cursor.execute("SELECT uid, login, passwd FROM usr WHERE login = %s", (username,))
-                        existing_user = cursor.fetchone()
-                        if existing_user:
-                            # Vérifier le mot de passe
-                            if existing_user[2] == hashlib.sha256(password.encode()).hexdigest():
-                                session["user_id"] = existing_user[0]
-                                return render_template('levels.html', levels=levels)
-                            else:
-                                return render_template('login.html', error="Le mot de passe est incorrect.")
-                        else:
-                            # Insérer un nouvel utilisateur
-                            cursor.execute(
-                                "INSERT INTO usr (login, passwd) VALUES (%s, %s) RETURNING uid",
-                                (username, hashlib.sha256(password.encode()).hexdigest())
-                            )
-                            session["user_id"] = cursor.fetchone()[0]
-                            conn.commit()
-                            return render_template('levels.html', levels=levels)
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT uid, login, passwd FROM usr WHERE login = %s", (username,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            # Vérifier le mot de passe
+            if existing_user[2] == hashlib.sha256(password.encode()).hexdigest():
+                session["user_id"] = existing_user[0]
+                return render_template('levels.html', levels=levels)
             else:
-                return render_template('login.html', error="Nom d'utilisateur ou mot de passe incorrect.")
+                return render_template('login.html', error="Le mot de passe est incorrect.")
+        else:
+            return render_template('login.html', error="L'utilisateur n'existe pas.")
 
-    except Exception as e:
-        return f"Le problème en question : {str(e)}"
+@app.route('/submitregister', methods=['POST'])
+def submitregister():
+    username = request.form['username']
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
+
+    if re.match("/<script/i", username) or re.match("/<script/i", password):
+        return render_template('register.html', error="")
+
+    if confirm_password != password:
+        return render_template('register.html', error="Les mots de passe ne correspondent pas.")
+
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9]{1,15}$", username) or not re.match(r"^[a-zA-Z][a-zA-Z0-9]{1,15}$", password):
+        return render_template('register.html', error="Non respect des règles de nom d'utilisateur ou de mot de passe.")
+
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT uid FROM usr WHERE login = %s", (username,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            return render_template('register.html', error="Cet utilisateur existe déjà.")
+
+        # Insérer un nouvel utilisateur
+        cursor.execute(
+            "INSERT INTO usr (login, passwd) VALUES (%s, %s) RETURNING uid",
+            (username, hashlib.sha256(password.encode()).hexdigest())
+        )
+        session["user_id"] = cursor.fetchone()[0]
+        conn.commit()
+    return render_template('login.html')
 
 @app.route('/game', methods=['POST'])
 def game():
