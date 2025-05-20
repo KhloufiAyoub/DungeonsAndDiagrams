@@ -2,37 +2,40 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>DungeonsAndDiagrams</title>
+    <title>DungeonsAndDiagrams - Niveaux</title>
     <link rel="stylesheet" href="/static/levels.css">
 </head>
 <body>
-<header>
-    <h1>Choisissez votre niveau</h1>
-    <a href="/logout">Déconnexion</a>
-</header>
-<main>
+<nav>
+    <div class="logout-container">
+        <a href="/logout" class="logout-btn">Déconnexion</a>
+    </div>
+    <header>
+        <h1>Choisissez votre niveau</h1>
+        <button type="button" id="global-scores-btn" class="global-scores-btn">Voir les scores globaux</button>
+    </header>
+</nav>
+
     {% if levels %}
-        <form action="/game" method="POST">
-            <label for="level-select">Niveau :</label>
-            <select name="level" id="level-select" required>
-                {% for level in levels %}
-                    <option value="{{ level[0] }}">{{ level[1] }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Démarrer le jeu</button>
-            <label for="score-level-select">Scores par niveau :</label>
-            <select name="score-level" id="score-level-select">
-                <option value="">Sélectionner un niveau</option>
-                {% for level in levels %}
-                    <option value="{{ level[0] }}">{{ level[1] }}</option>
-                {% endfor %}
-            </select>
-            <button type="button" id="global-scores-btn">Voir les scores globaux</button>
-        </form>
+        <div class="levels-grid">
+            {% for level in levels %}
+                <div class="level-card">
+                    <h3>{{ level[1] }}</h3>
+                    <form action="/game" method="POST">
+                        <input type="hidden" name="level" value="{{ level[0] }}">
+                        <div class="card-footer">
+                            <button type="submit" class="play-btn">Démarrer</button>
+                        </div>
+                    </form>
+
+                            <button class="score-btn" data-level-id="{{ level[0] }}">Voir les scores</button>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         <p>Aucun niveau disponible pour le moment.</p>
     {% endif %}
-</main>
+
 <script src="/static/levels.js"></script>
 </body>
 </html>

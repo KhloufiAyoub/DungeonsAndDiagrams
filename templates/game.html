@@ -4,30 +4,49 @@
     <meta charset="UTF-8">
     <title>DungeonsAndDiagrams</title>
     <link href="../static/game.css" rel="stylesheet">
-    <script src="../static/game.js" DEFER></script>
+    <link href="../static/popup.css" rel="stylesheet">
+    <script src="../static/game.js" defer></script>
 </head>
 <body>
-<h1 id="titre"></h1>
-<div id="timer">Temps : 00:00</div>
+    <nav>
+        <div class="logout-container">
+            <a href="/logout" class="logout-btn">Déconnexion</a>
+        </div>
+        <header>
+            <h1 id="titre"></h1>
+            <div class="header-infos">
+                <div id="timer">Temps : 00:00</div>
+                <a href="/giveUp">Abandonner le niveau</a>
+            </div>
+        </header>
+    </nav>
 
-<table class="bordered-table">
-    <tr>
-        <td></td>
-        {% for i in range(8) %}
-            <td id="col-{{i}}"></td>
-        {% endfor %}
 
-    </tr>
-    {% for i in range(8) %}
+    <table class="bordered-table">
         <tr>
-            <td id="row-{{i}}"></td>
-            {% for j in range(8) %}
-                <td id="{{i}};{{j}}"></td>
+            <td></td>
+            {% for i in range(8) %}
+                <td id="col-{{i}}"></td>
             {% endfor %}
         </tr>
-    {% endfor %}
-</table>
-<button id="submitlvl" style="display:none;">Suivant</button>
+        {% for i in range(8) %}
+            <tr>
+                <td id="row-{{i}}"></td>
+                {% for j in range(8) %}
+                    <td id="{{i}};{{j}}"></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <button id="submitlvl" style="display:none;">Suivant</button>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+            <button id="popup-btn" class="popup-btn">OK</button>
+        </div>
+    </div>
 
 </body>
 </html>

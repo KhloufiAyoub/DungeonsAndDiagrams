@@ -36,6 +36,11 @@ function startTimer() {
     timerInterval = setInterval(updateTimer, 1000);
 }
 
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
 function updateTimer() {
     if (!startTime) return;
     var elapsed = Math.floor((Date.now() - startTime) / 1000); // Temps écoulé en secondes
@@ -141,20 +146,23 @@ function UpdateNumbers(row, col){
         }
     }
     if(cptRow === parseInt(hintv[row])) {
-        document.getElementById("row-"+row).style.color = "green";
+        document.getElementById("row-"+row).style.color = "#00FF00";
     }else{
-        document.getElementById("row-"+row).style.color = "red";
+        document.getElementById("row-"+row).style.color = "#FF5A5A";
     }
     if(cptCol === parseInt(hinth[col])) {
-        document.getElementById("col-"+col).style.color = "green";
+        document.getElementById("col-"+col).style.color = "#00FF00";
     }else {
-        document.getElementById("col-" + col).style.color = "red";
+        document.getElementById("col-" + col).style.color = "#FF5A5A";
     }
 }
 
-function SubmitLvl(){
-    var url="/submitlvl";
-    var xhr= new XMLHttpRequest();
+function SubmitLvl() {
+    if (timerInterval) {
+        stopTimer();
+    }
+    var url = "/submitlvl";
+    var xhr = new XMLHttpRequest();
     var gridStr = "";
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
@@ -162,24 +170,34 @@ function SubmitLvl(){
         }
     }
     var params = "grid=" + encodeURIComponent(gridStr);
-    xhr.onreadystatechange = function(){
-        if (xhr.readyState === 4){
-            if (xhr.status === 200){
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
                 var response = JSON.parse(xhr.response);
-                if(response["message"] === "Level completed") {
-                    alert("Bravo ! Niveau terminé");
-                    window.location.href = "/levels";
-                } else if(response["message"] === "Incorrect answer") {
-                    alert("Le niveau n'est pas terminé");
-                } else {
-                    alert("Erreur : " + response["message"]);
+                var popup = document.getElementById("popup");
+                var popupMessage = document.getElementById("popup-message");
+                var popupBtn = document.getElementById("popup-btn");
+
+                if (response["message"] === "Level completed, mais le temps n'est pas meilleur"
+                    || response["message"] === "Level completed, score enregistré"
+                    || response["message"] === "Score mis à jour avec un meilleur temps") {
+                    popupMessage.textContent = response["message"];
+                    popupBtn.onclick = function() {
+                        window.location.href = "/levels";
+                    };
+                    popup.style.display = "block";
                 }
-            } else {
-                alert("Erreur serveur lors de la soumission");
+                else {
+                    popupMessage.textContent = "Erreur : " + response["message"];
+                    popupBtn.onclick = function() {
+                        popup.style.display = "none";
+                    };
+                    popup.style.display = "block";
+                }
             }
         }
-    }
-    xhr.open("POST",url,true);
-    xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    };
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(params);
 }

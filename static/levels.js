@@ -1,12 +1,18 @@
-var scoreLevelSelect = document.getElementById('score-level-select');
-scoreLevelSelect.addEventListener('change', function() {
-    const selectedLevel = this.value;
-    if (selectedLevel) {
-        window.location.href = '/scores/' + selectedLevel;
-    }
-});
+document.addEventListener("DOMContentLoaded", function() {
+    // Gestion des boutons de scores par niveau
+    const scoreButtons = document.querySelectorAll(".score-btn");
+    scoreButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const levelId = this.getAttribute("data-level-id");
+            window.location.href = `/scores/${levelId}`;
+        });
+    });
 
-var globalScoresBtn = document.getElementById('global-scores-btn');
-globalScoresBtn.addEventListener('click', function() {
-    window.location.href = '/scores';
+    // Gestion du bouton des scores globaux
+    const globalScoresBtn = document.getElementById("global-scores-btn");
+    if (globalScoresBtn) {
+        globalScoresBtn.addEventListener("click", function() {
+            window.location.href = "/scores";
+        });
+    }
 });

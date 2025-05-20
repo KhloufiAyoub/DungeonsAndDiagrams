@@ -1,0 +1,64 @@
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fond sombre avec opacité */
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #1c2526; /* Gris sombre terminal */
+    margin: 15% auto;
+    padding: 20px;
+    border: 2px solid #00ff00; /* Bordure verte */
+    width: 80%;
+    max-width: 400px;
+    border-radius: 0;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); /* Glow vert */
+    color: #00ff00;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+.popup-close {
+    color: #00ff00;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.popup-close:hover,
+.popup-close:focus {
+    color: #0f0f0f;
+    background-color: #00ff00;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.popup-btn {
+    background-color: #1a3c34; /* Vert sombre */
+    color: #00ff00;
+    padding: 10px 20px;
+    border: 2px solid #00ff00;
+    border-radius: 0;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 16px;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+}
+
+.popup-btn:hover {
+    background-color: #00ff00;
+    color: #0f0f0f;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.5);
+}

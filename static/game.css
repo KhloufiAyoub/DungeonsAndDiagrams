@@ -1,46 +1,88 @@
 body {
-    font-family: 'Comic Sans MS', 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #87ceeb 0%, #ffffff 100%); /* Ciel bleu Mario */
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background: #0f0f0f; /* Noir de terminal */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin: 0;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 255, 0, 0.05) 0px,
+            rgba(0, 255, 0, 0.05) 1px,
+            transparent 1px,
+            transparent 2px
+    ); /* Effet scanlines */
+    pointer-events: none;
+}
+
+
+nav {
+    position: relative;
+    width: 100%;
+}
+
+.logout-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+}
+
+header h1 {
+    color: #00ff00; /* Vert CRT */
+    font-size: 32px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 h1 {
     font-size: 28px;
-    margin-bottom: 20px;
-    color: #ff4500;
-    text-shadow: 2px 2px #ffffff;
-    text-align: center; /* Centrer le titre */
-    width: 100%; /* Assurer que le titre prend toute la largeur pour un centrage correct */
+    color: #00ff00; /* Vert néon CRT */
+    text-align: center;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .bordered-table {
     border-collapse: collapse;
-    background-color: #d3d3d3; /* Gris clair pour contraste avec les pièces jaunes */
-    border-radius: 15px;
-    border: 5px solid #ff4500;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    margin: 0 auto; /* Centrer la grille horizontalement */
+    background-color: #1c2526; /* Gris sombre terminal */
+    border: 2px solid #00ff00; /* Bordure verte */
+    margin: 0 auto;
 }
 
 .bordered-table td, .bordered-table th {
-    border: 2px solid #006400;
+    border: 2px solid #00ff00;
     padding: 8px;
     width: 58px;
     height: 58px;
     text-align: center;
-    font-weight: bold;
-    color: #ff4500;
-    text-shadow: 1px 1px #ffffff;
+    color: #00ff00;
     transition: background-color 0.2s;
 }
 
 .bordered-table th {
-    background-color: #ffeb3b; /* Jaune plus clair */
+    background-color: #1a3c34; /* Vert sombre */
 }
 
 .floor {
@@ -64,36 +106,69 @@ h1 {
 }
 
 button#submitlvl {
-    background-color: #ff4500;
-    color: white;
+    background-color: #1a3c34; /* Vert sombre */
+    color: #00ff00;
     padding: 10px 20px;
-    border: 3px solid #006400;
-    border-radius: 10px;
-    font-size: 18px;
+    border: 2px solid #00ff00;
+    border-radius: 0;
+    font-size: 16px;
     margin-top: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: bold;
-    display: block; /* Permet de centrer avec margin */
+    transition: all 0.2s ease;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    display: block;
     margin-left: auto;
-    margin-right: auto; /* Centrer le bouton */
+    margin-right: auto;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+    text-transform: uppercase;
 }
 
 button#submitlvl:hover {
-    background-color: #ff6347;
+    background-color: #00ff00;
+    color: #0f0f0f;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.5);
 }
 
-#timer {
+#timer, a {
     font-size: 24px;
-    color: #ff4500; /* Rouge Mario pour correspondre au thème */
-    text-shadow: 2px 2px #ffffff; /* Ombre comme dans h1 */
-    background-color: #ffd700; /* Fond jaune Mario */
-    padding: 10px 20px; /* Espacement interne */
-    border: 4px solid #006400; /* Bordure verte */
-    border-radius: 10px; /* Coins arrondis */
-    margin: 0 auto 20px auto; /* Centrage horizontal avec margin auto, suivi de margin-bottom */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Ombre légère */
-    text-align: center; /* Centrer le texte à l'intérieur */
-    width: 200px; /* Largeur fixe pour une présentation propre */
-    display: block; /* Assure que margin: 0 auto fonctionne */
+    color: #00ff00;
+    background-color: #1a3c34; /* Vert sombre */
+    padding: 10px 20px;
+    border: 2px solid #00ff00;
+    border-radius: 0;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+    text-align: center;
+    width: 200px;
+    display: block;
+    height: 30px;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+.header-infos{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+a{
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+a:hover {
+    background-color: #00ff00;
+    color: #0f0f0f;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.5);
+}
+
+.logout-container a {
+    border-radius: 50px;
+    font-size: 16px;
+    width: 100px;
+    margin: 5px;
 }

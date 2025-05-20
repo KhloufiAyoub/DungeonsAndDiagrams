@@ -13,6 +13,15 @@ conn = psycopg.connect(
 def home():
     return render_template('login.html')
 
+@app.route('/giveUp')
+def giveUp():
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT lid, name FROM levels")
+        levels = cursor.fetchall()
+
+    session["level_id"] = None
+    return render_template('levels.html', levels=levels)
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -44,7 +53,7 @@ def submitlogin():
             else:
                 return render_template('login.html', error="Le mot de passe est incorrect.")
         else:
-            return render_template('login.html', error="L'utilisateur n'existe pas.")
+            return render_template('login.html', error="")
 
 @app.route('/submitregister', methods=['POST'])
 def submitregister():
@@ -99,31 +108,65 @@ def init():
     except Exception as e:
         return jsonify({"message": str(e)})
 
+
 @app.route('/submitlvl', methods=['POST'])
 def submitlvl():
-    if request.method == 'POST':
-        gridsubmit = request.form['grid']
+    # Vérifier que les variables de session existent
+    if not session.get("user_id") or not session.get("level_id"):
+        return jsonify({"message": "Utilisateur ou niveau non spécifié"}), 401
+
+    gridsubmit = request.form.get('grid', '').strip()
+    if not gridsubmit:
+        return jsonify({"message": "Aucune grille soumise"}), 400
+
+    try:
         with conn.cursor() as cursor:
+            # Vérifier si le niveau existe
             cursor.execute("SELECT lvl FROM levels WHERE lid = %s", (session["level_id"],))
             level = cursor.fetchone()
-            if level:
-                if gridsubmit == level[0]:
-                    # Calculer le temps écoulé
-                    end_time = datetime.now().timestamp()
-                    start_time = session.get("start_time")
-                    if start_time:
-                        completion_time = int(end_time - start_time)
-                        # Enregistrer le score
+            if not level:
+                return jsonify({"message": "No level found"}), 404
+
+            # Vérifier si la soumission est correcte
+            if gridsubmit == level[0]:
+                # Calculer le temps écoulé
+                end_time = datetime.now().timestamp()
+                start_time = session.get("start_time")
+                if not start_time:
+                    return jsonify({"message": "Temps de départ non défini"}), 400
+                completion_time = int(end_time - start_time)
+
+                # Vérifier si un score existe pour cet utilisateur et ce niveau
+                cursor.execute(
+                    "SELECT completion_time FROM scores WHERE uid = %s AND lid = %s",
+                    (session["user_id"], session["level_id"])
+                )
+                existing_score = cursor.fetchone()
+
+                if existing_score:
+                    # Si un score existe, mettre à jour uniquement si le nouveau temps est meilleur
+                    if completion_time < existing_score[0]:
                         cursor.execute(
-                            "INSERT INTO scores (uid, lid, completion_time) VALUES (%s, %s, %s)",
-                            (session["user_id"], session["level_id"], completion_time)
+                            "UPDATE scores SET completion_time = %s WHERE uid = %s AND lid = %s",
+                            (completion_time, session["user_id"], session["level_id"])
                         )
                         conn.commit()
-                    return jsonify({"message": "Level completed"})
+                        return jsonify({"message": "Score mis à jour avec un meilleur temps"})
+                    else:
+                        return jsonify({"message": "Level completed, mais le temps n'est pas meilleur"})
                 else:
-                    return jsonify({"message": "Incorrect answer"})
+                    # Insérer un nouveau score
+                    cursor.execute(
+                        "INSERT INTO scores (uid, lid, completion_time) VALUES (%s, %s, %s)",
+                        (session["user_id"], session["level_id"], completion_time)
+                    )
+                    conn.commit()
+                    return jsonify({"message": "Level completed, score enregistré"})
             else:
-                return jsonify({"message": "No level found"})
+                return jsonify({"message": "Incorrect answer"}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)})
+
 
 @app.route('/levels')
 def levels():
@@ -131,6 +174,8 @@ def levels():
         cursor.execute("SELECT lid, name FROM levels")
         levels = cursor.fetchall()
         return render_template('levels.html', levels=levels)
+
+
 
 @app.route('/scores')
 def global_scores():
@@ -148,6 +193,8 @@ def global_scores():
             return render_template('scores.html', scores=global_scores, level_name=None)
     except Exception as e:
         return render_template('scores.html', error=str(e), scores=[], level_name=None)
+
+
 
 @app.route('/scores/<int:lid>')
 def level_scores(lid):
@@ -170,6 +217,8 @@ def level_scores(lid):
             return render_template('scores.html', scores=level_scores, level_name=level_name)
     except Exception as e:
         return render_template('scores.html', error=str(e), scores=[], level_name=None)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

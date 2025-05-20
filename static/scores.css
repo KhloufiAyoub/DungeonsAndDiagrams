@@ -1,62 +1,92 @@
 body {
-    font-family: 'Comic Sans MS', 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #87ceeb 0%, #ffffff 100%);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background: linear-gradient(to bottom, #0f0f0f 0%, #1c2526 100%); /* Noir avec dégradé gris sombre */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin: 0;
+    position: relative;
 }
 
-h1 {
-    color: #ff4500;
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 255, 0, 0.05) 0px,
+            rgba(0, 255, 0, 0.05) 1px,
+            transparent 1px,
+            transparent 2px
+    ); /* Scanlines verts */
+    pointer-events: none;
+}
+
+h1, h2 {
+    color: #00ff00;
     font-size: 36px;
     margin-bottom: 20px;
-    text-shadow: 3px 3px #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+h2 {
+    font-size: 28px;
 }
 
 .bordered-table {
     border-collapse: collapse;
-    background-color: #d3d3d3;
-    border-radius: 15px;
-    border: 5px solid #ff4500;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #1c2526; /* Gris sombre terminal */
+    border: 2px solid #00ff00; /* Bordure verte */
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); /* Glow vert */
     margin-bottom: 20px;
 }
 
 .bordered-table th, .bordered-table td {
-    border: 2px solid #006400;
+    border: 2px solid #00ff00;
     padding: 10px;
     text-align: center;
-    font-weight: bold;
-    color: #ff4500;
-    text-shadow: 1px 1px #ffffff;
+    color: #00ff00;
 }
 
 .bordered-table th {
-    background-color: #ffeb3b;
+    background-color: #1a3c34; /* Vert sombre */
 }
 
 .error {
-    color: #ff0000;
+    color: #00ff00;
     margin-bottom: 20px;
     font-size: 16px;
-    text-shadow: 1px 1px #ffffff;
+    text-transform: uppercase;
+}
+
+p {
+    color: #00ff00;
+    font-size: 24px;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 a {
-    background-color: #ff4500;
-    color: white;
+    background-color: #1a3c34; /* Vert sombre */
+    color: #00ff00;
     padding: 10px 20px;
-    border: 3px solid #006400;
-    border-radius: 10px;
-    font-size: 18px;
+    border: 2px solid #00ff00;
+    border-radius: 0;
+    font-size: 16px;
     text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
 }
 
 a:hover {
-    background-color: #ff6347;
+    background-color: #00ff00;
+    color: #0f0f0f;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.5);
 }

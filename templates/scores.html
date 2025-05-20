@@ -6,12 +6,9 @@
 </head>
 <body>
 <h1>
-    {% if level_name %}
-        Meilleurs scores pour {{ level_name }}
-    {% else %}
-        Meilleurs scores globaux
-    {% endif %}
+    {{ level_name }}
 </h1>
+<h2>Meilleurs scores</h2>
 
 {% if error %}
     <p class="error">{{ error }}</p>
