@@ -9,8 +9,6 @@ conn = psycopg.connect(
     "dbname=py2501 user=py2501 password=cruipi72failou host=student.endor.be port=5433"
 )
 
-Glo_Username = " "
-
 cursor = conn.cursor()
 
 @app.route('/')
@@ -129,7 +127,7 @@ def global_scores():
                 FROM usr u
                 LEFT JOIN scores s ON u.uid = s.uid
                 GROUP BY u.uid, u.login
-                ORDER BY levels_solved DESC, avg_time ASC
+                ORDER BY levels_solved DESC, avg_time
                 LIMIT 10
             """)
             global_scores = cursor.fetchall()
@@ -151,7 +149,7 @@ def level_scores(lid):
                 FROM usr u
                 JOIN scores s ON u.uid = s.uid
                 WHERE s.lid = %s
-                ORDER BY s.completion_time ASC
+                ORDER BY s.completion_time
                 LIMIT 10
             """, (lid,))
             level_scores = cursor.fetchall()
