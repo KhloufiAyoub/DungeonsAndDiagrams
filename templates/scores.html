@@ -5,9 +5,11 @@
     <link rel="stylesheet" href="/static/scores.css">
 </head>
 <body>
-<h1>
-    {{ level_name }}
-</h1>
+{% if level_name is not None %}
+    <h1>
+        {{ level_name }}
+    </h1>
+{% endif %}
 <h2>Meilleurs scores</h2>
 
 {% if error %}

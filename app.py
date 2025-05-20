@@ -31,8 +31,8 @@ def logout():
 def register():
     return render_template('register.html')
 
-@app.route('/submitlogin', methods=['POST'])
-def submitlogin():
+@app.route('/login', methods=['POST'])
+def login():
     session["level_id"] = None
     session["user_id"] = None
     username = request.form['username']
@@ -55,8 +55,8 @@ def submitlogin():
         else:
             return render_template('login.html', error="")
 
-@app.route('/submitregister', methods=['POST'])
-def submitregister():
+@app.route('/signup', methods=['POST'])
+def signup():
     username = request.form['username']
     password = request.form['password']
     confirm_password = request.form['confirm_password']
@@ -104,13 +104,12 @@ def init():
             if level:
                 return jsonify(level)
             else:
-                return jsonify({"message": "No level found"})
+                return jsonify({"message": "Aucun niveau trouvé"})
     except Exception as e:
         return jsonify({"message": str(e)})
 
-
-@app.route('/submitlvl', methods=['POST'])
-def submitlvl():
+@app.route('/result', methods=['POST'])
+def result():
     # Vérifier que les variables de session existent
     if not session.get("user_id") or not session.get("level_id"):
         return jsonify({"message": "Utilisateur ou niveau non spécifié"}), 401
@@ -125,7 +124,7 @@ def submitlvl():
             cursor.execute("SELECT lvl FROM levels WHERE lid = %s", (session["level_id"],))
             level = cursor.fetchone()
             if not level:
-                return jsonify({"message": "No level found"}), 404
+                return jsonify({"message": "Aucun niveau trouvé"}), 404
 
             # Vérifier si la soumission est correcte
             if gridsubmit == level[0]:
@@ -153,7 +152,7 @@ def submitlvl():
                         conn.commit()
                         return jsonify({"message": "Score mis à jour avec un meilleur temps"})
                     else:
-                        return jsonify({"message": "Level completed, mais le temps n'est pas meilleur"})
+                        return jsonify({"message": "Niveau accompli, mais le temps n'est pas meilleur"})
                 else:
                     # Insérer un nouveau score
                     cursor.execute(
@@ -161,12 +160,11 @@ def submitlvl():
                         (session["user_id"], session["level_id"], completion_time)
                     )
                     conn.commit()
-                    return jsonify({"message": "Level completed, score enregistré"})
+                    return jsonify({"message": "Niveau accompli, score enregistré"})
             else:
-                return jsonify({"message": "Incorrect answer"}), 400
+                return jsonify({"message": "Mauvaise réponse"})
     except Exception as e:
         return jsonify({"message": str(e)})
-
 
 @app.route('/levels')
 def levels():
@@ -174,8 +172,6 @@ def levels():
         cursor.execute("SELECT lid, name FROM levels")
         levels = cursor.fetchall()
         return render_template('levels.html', levels=levels)
-
-
 
 @app.route('/scores')
 def global_scores():
@@ -193,8 +189,6 @@ def global_scores():
             return render_template('scores.html', scores=global_scores, level_name=None)
     except Exception as e:
         return render_template('scores.html', error=str(e), scores=[], level_name=None)
-
-
 
 @app.route('/scores/<int:lid>')
 def level_scores(lid):
@@ -217,8 +211,6 @@ def level_scores(lid):
             return render_template('scores.html', scores=level_scores, level_name=level_name)
     except Exception as e:
         return render_template('scores.html', error=str(e), scores=[], level_name=None)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

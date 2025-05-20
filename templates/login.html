@@ -6,15 +6,15 @@
     <link href="../static/login.css" rel="stylesheet">
 </head>
 <body>
-<form action="/submitlogin" method="POST">
-    <h1>Login form</h1>
-    <label for="username">Username:</label>
+<form action="/login" method="POST">
+    <h1>Formulaire de connexion</h1>
+    <label for="username">Pseudo:</label>
     <input type="text" id="username" name="username" required>
 
-    <label for="password">Password:</label>
+    <label for="password">Mot de passe:</label>
     <input type="password" id="password" name="password" required>
 
-    <button type="submit">Login</button>
+    <button type="submit">Se connecter</button>
 
     {% if error %}
         <p class="error">{{ error }}</p>

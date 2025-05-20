@@ -161,7 +161,7 @@ function SubmitLvl() {
     if (timerInterval) {
         stopTimer();
     }
-    var url = "/submitlvl";
+    var url = "/result";
     var xhr = new XMLHttpRequest();
     var gridStr = "";
     for (var i = 0; i < grid.length; i++) {
@@ -178,8 +178,8 @@ function SubmitLvl() {
                 var popupMessage = document.getElementById("popup-message");
                 var popupBtn = document.getElementById("popup-btn");
 
-                if (response["message"] === "Level completed, mais le temps n'est pas meilleur"
-                    || response["message"] === "Level completed, score enregistré"
+                if (response["message"] === "Niveau accompli, mais le temps n'est pas meilleur"
+                    || response["message"] === "Niveau accompli, score enregistré"
                     || response["message"] === "Score mis à jour avec un meilleur temps") {
                     popupMessage.textContent = response["message"];
                     popupBtn.onclick = function() {
