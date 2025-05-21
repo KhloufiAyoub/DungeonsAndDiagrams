@@ -17,27 +17,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// fonction pour aller chercher avec un requete AJAX l'image du niveau et l'afficher dans la div avec comme id lvl-img-{{l'id du niveau}}
+// Fonction pour charger l'image d'un niveau via une requête AJAX
 function loadLevelImage(levelId) {
     var imgDiv = document.getElementById(`lvl-img-${levelId}`);
     if (imgDiv) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/level-image/${levelId}`, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                var img = document.createElement("img");
-                img.src = response.image; // L'image est déjà en base64 (data:image/png;base64,...)
-                img.alt = `Image du niveau ${levelId}`;
-                imgDiv.appendChild(img);
-
-            } else {
-                console.error("Erreur lors du chargement de l'image du niveau.");
-            }
+        // Créer un élément img
+        var img = document.createElement("img");
+        img.src = `/level-image/${levelId}`; // URL directe vers l'image
+        img.alt = `Image du niveau ${levelId}`;
+        img.onerror = function() {
+            console.error(`Erreur lors du chargement de l'image pour le niveau ${levelId}`);
         };
-        xhr.send();
+        imgDiv.appendChild(img);
     }
 }
+
 // Fonction pour charger les images de tous les niveaux
 function loadAllLevelImages() {
     var levelIds = Array.from(document.querySelectorAll("[id^='lvl-img-']")).map(div => div.id.split('-')[2]);
