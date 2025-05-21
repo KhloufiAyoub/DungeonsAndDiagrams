@@ -1,5 +1,6 @@
+import base64
 import psycopg, re, hashlib
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, abort
 from datetime import datetime  # Pour gérer les timestamps
 
 app = Flask(__name__)
@@ -211,6 +212,33 @@ def level_scores(lid):
             return render_template('scores.html', scores=level_scores, level_name=level_name)
     except Exception as e:
         return render_template('scores.html', error=str(e), scores=[], level_name=None)
+
+@app.route('/level-image/<int:lid>')
+def level_image(lid):
+    # Vérifier que l'utilisateur est authentifié
+    if "user_id" not in session:
+        abort(401)  # Non autorisé si l'utilisateur n'est pas connecté
+
+    with conn.cursor() as cursor:
+        # Vérifier si l'utilisateur a résolu le niveau
+        cursor.execute("SELECT completion_time FROM scores WHERE uid = %s AND lid = %s", (session["user_id"], lid))
+        score = cursor.fetchone()
+
+        # Déterminer le chemin de l'image
+        image_path = f"static/img/levels-solved/level-{lid}.png" if score else f"static/img/levels/level-{lid}.png"
+
+        # Lire l'image et l'encoder en base64
+        try:
+            with open(image_path, "rb") as image_file:
+                image_data = base64.b64encode(image_file.read()).decode('utf-8')
+                response = jsonify({"image": f"data:image/png;base64,{image_data}"})
+                response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+                return response
+        except FileNotFoundError:
+            abort(404)  # Image non trouvée
+        except Exception as e:
+            print(f"Erreur lors de la lecture de l'image : {e}")
+            abort(500)  # Erreur serveur
 
 if __name__ == '__main__':
     app.run(debug=True)

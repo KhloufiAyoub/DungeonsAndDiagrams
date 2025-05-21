@@ -100,7 +100,7 @@ header h1 {
     justify-content: space-between;
     min-height: 170px;
     transition: all 0.2s ease;
-    height: 200px;
+    height: 300px;
 }
 
 .level-card:hover {
@@ -108,13 +108,18 @@ header h1 {
     transform: translateY(-3px);
 }
 
-.level-card h3 {
+.level-card .card-img h3 {
     color: #00ff00;
     font-size: 18px;
     text-align: center;
     flex-grow: 0;
     text-transform: uppercase;
-    height: 60px;
+}
+
+.card-img{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .card-footer {
@@ -156,4 +161,9 @@ p {
     font-size: 24px;
     text-align: center;
     text-transform: uppercase;
+}
+
+img{
+    width: 125px;
+    height: 125px;
 }
