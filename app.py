@@ -1,6 +1,6 @@
 import psycopg, re, hashlib
-from flask import Flask, render_template, request, jsonify, session, abort, send_file
-from datetime import datetime  # Pour gérer les timestamps
+from flask import Flask, render_template, request, jsonify, session, send_file
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "cruipi72failou"
@@ -46,7 +46,6 @@ def login():
         cursor.execute("SELECT uid, login, passwd FROM usr WHERE login = %s", (username,))
         existing_user = cursor.fetchone()
         if existing_user:
-            # Vérifier le mot de passe
             if existing_user[2] == hashlib.sha256(password.encode()).hexdigest():
                 session["user_id"] = existing_user[0]
                 return render_template('levels.html', levels=levels)
@@ -76,12 +75,10 @@ def signup():
         if existing_user:
             return render_template('register.html', error="Cet utilisateur existe déjà.")
 
-        # Insérer un nouvel utilisateur
         cursor.execute(
             "INSERT INTO usr (login, passwd) VALUES (%s, %s) RETURNING uid",
             (username, hashlib.sha256(password.encode()).hexdigest())
         )
-        session["user_id"] = cursor.fetchone()[0]
         conn.commit()
     return render_template('login.html')
 
@@ -89,7 +86,7 @@ def signup():
 def game():
     if request.method == 'POST':
         session["level_id"] = request.form['level']
-        session["start_time"] = datetime.now().timestamp()  # Enregistrer le temps de début
+        session["start_time"] = datetime.now().timestamp()
         return render_template('game.html')
 
 @app.route('/init', methods=['POST'])
@@ -110,32 +107,27 @@ def init():
 
 @app.route('/result', methods=['POST'])
 def result():
-    # Vérifier que les variables de session existent
     if not session.get("user_id") or not session.get("level_id"):
-        return jsonify({"message": "Utilisateur ou niveau non spécifié"}), 401
+        return jsonify({"message": "Utilisateur ou niveau non spécifié"})
 
     gridsubmit = request.form.get('grid', '').strip()
     if not gridsubmit:
-        return jsonify({"message": "Aucune grille soumise"}), 400
+        return jsonify({"message": "Aucune grille soumise"})
 
     try:
         with conn.cursor() as cursor:
-            # Vérifier si le niveau existe
             cursor.execute("SELECT lvl FROM levels WHERE lid = %s", (session["level_id"],))
             level = cursor.fetchone()
             if not level:
-                return jsonify({"message": "Aucun niveau trouvé"}), 404
+                return jsonify({"message": "Aucun niveau trouvé"})
 
-            # Vérifier si la soumission est correcte
             if gridsubmit == level[0]:
-                # Calculer le temps écoulé
                 end_time = datetime.now().timestamp()
                 start_time = session.get("start_time")
                 if not start_time:
-                    return jsonify({"message": "Temps de départ non défini"}), 400
+                    return jsonify({"message": "Temps de départ non défini"})
                 completion_time = int(end_time - start_time)
 
-                # Vérifier si un score existe pour cet utilisateur et ce niveau
                 cursor.execute(
                     "SELECT completion_time FROM scores WHERE uid = %s AND lid = %s",
                     (session["user_id"], session["level_id"])
@@ -143,7 +135,6 @@ def result():
                 existing_score = cursor.fetchone()
 
                 if existing_score:
-                    # Si un score existe, mettre à jour uniquement si le nouveau temps est meilleur
                     if completion_time < existing_score[0]:
                         cursor.execute(
                             "UPDATE scores SET completion_time = %s WHERE uid = %s AND lid = %s",
@@ -154,7 +145,6 @@ def result():
                     else:
                         return jsonify({"message": "Niveau accompli, mais le temps n'est pas meilleur"})
                 else:
-                    # Insérer un nouveau score
                     cursor.execute(
                         "INSERT INTO scores (uid, lid, completion_time) VALUES (%s, %s, %s)",
                         (session["user_id"], session["level_id"], completion_time)
@@ -183,8 +173,7 @@ def global_scores():
                 LEFT JOIN scores s ON u.uid = s.uid
                 GROUP BY u.uid, u.login
                 ORDER BY levels_solved DESC, avg_time
-                LIMIT 10
-            """)
+                LIMIT 10""")
             global_scores = cursor.fetchall()
             return render_template('scores.html', scores=global_scores, level_name=None)
     except Exception as e:
@@ -215,14 +204,10 @@ def level_scores(lid):
 @app.route('/level-image/<int:lid>')
 def level_image(lid):
     with conn.cursor() as cursor:
-        # Vérifier si l'utilisateur a résolu le niveau
         cursor.execute("SELECT completion_time FROM scores WHERE uid = %s AND lid = %s", (session["user_id"], lid))
         score = cursor.fetchone()
 
-        # Déterminer le chemin de l'image
         image_path = f"static/img/levels-solved/level-{lid}.png" if score else f"static/img/levels/level-{lid}.png"
-
-        # Vérifier si le fichier existe et l'envoyer
 
         response = send_file(image_path, mimetype='image/png')
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"

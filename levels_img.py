@@ -18,7 +18,7 @@ def conv_level_solved(lvl):
 def draw_screen(finish=False):
     global img, font_hint, screen, lvltab, lvlh, lvlv, wallh, wallv, background_surface
 
-    # Appliquer le fond avec effet scanlines
+    # Appliquer le fond du site
     screen.blit(background_surface, (0, 0))
 
     # Taille des cases et décalage
@@ -37,7 +37,7 @@ def draw_screen(finish=False):
             elif case == 3:  # Trunk
                 screen.blit(img[2], (offset_x + j * case_size, offset_y + i * case_size))
 
-    # Dessiner les indices horizontaux (en haut) en rouge
+    # Dessiner les indices horizontaux (en haut)
     for i in range(8):
         color = (0, 255, 0) if lvlh[i] == 0 else (255, 0, 0)
         if finish:
@@ -45,7 +45,7 @@ def draw_screen(finish=False):
         text = font_hint.render(str(lvlh[i]), False, color)
         screen.blit(text, (offset_x + i * case_size + case_size // 2 - 10, offset_y - 30))
 
-    # Dessiner les indices verticaux (à gauche) en rouge ou vert selon la valeur
+    # Dessiner les indices verticaux (à gauche)
     for i in range(8):
         color = (0, 255, 0) if lvlv[i] == 0 else (255, 0, 0)
         if finish:
@@ -75,18 +75,16 @@ img = (wall, mob, trunk)
 
 font_hint = pygame.font.Font(None, 36)  # Taille de police ajustée
 
-# Créer une surface pour le fond avec effet scanlines
+# Créer une surface pour le fond du site
 background_surface = pygame.Surface((450, 450))
 background_surface.fill((27, 48, 36))  # Fond noir
 for y in range(0, 460, 2):
     pygame.draw.line(background_surface, (28, 37, 38), (0, y), (460, y), 1)  # 0.05 * 255 ≈ 12 pour l'alpha
 
-# Définir manuellement le niveau pour correspondre à l'image
 
 running = True
 wallh = [0] * 8
 wallv = [0] * 8
-
 
 
 if __name__ == "__main__":
@@ -102,10 +100,12 @@ if __name__ == "__main__":
             (lvltab, lvlsol, lvlh, lvlv) = conv_level(lvl)
             draw_screen()
             pygame.display.flip()
+            # Enregistrer l'image de la grille non résolue
             pygame.image.save(screen, f"static/img/levels/level-{level[3]}.png")
             (lvltab, lvlsol, lvlh, lvlv) = conv_level_solved(lvl)
             draw_screen(True)
             pygame.display.flip()
+            # Enregistrer l'image de la grille résolue
             pygame.image.save(screen, f"static/img/levels-solved/level-{level[3]}.png")
 
 
