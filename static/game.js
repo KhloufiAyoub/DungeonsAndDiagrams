@@ -25,7 +25,8 @@ function loadGame(){
             initializeGrid(JSON.parse(xhr.response))
             startTimer();
         } else if (xhr.status === 401) {
-        window.location.href = "/"; // Rediriger vers la page de connexion
+            console.log("test")
+            window.location.href = "/"; // Rediriger vers la page de connexion
         } else {
             console.error("Erreur lors du chargement du jeu:", xhr.status);
         }
