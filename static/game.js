@@ -24,6 +24,10 @@ function loadGame(){
         if (xhr.readyState === 4 && xhr.status === 200){
             initializeGrid(JSON.parse(xhr.response))
             startTimer();
+        } else if (xhr.status === 401) {
+        window.location.href = "/"; // Rediriger vers la page de connexion
+        } else {
+            console.error("Erreur lors du chargement du jeu:", xhr.status);
         }
     }
     xhr.open("POST",url,true);
@@ -194,6 +198,10 @@ function SubmitLvl() {
                     };
                     popup.style.display = "block";
                 }
+            } else if (xhr.status === 401) {
+                window.location.href = "/"; // Rediriger vers la page de connexion
+            } else {
+                console.error("Erreur lors de la soumission:", xhr.status);
             }
         }
     };

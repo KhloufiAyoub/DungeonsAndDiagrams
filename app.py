@@ -1,5 +1,5 @@
 import psycopg, re, hashlib
-from flask import Flask, render_template, request, jsonify, session, send_file
+from flask import Flask, render_template, request, jsonify, session, send_file, redirect, url_for
 from datetime import datetime
 
 app = Flask(__name__)
@@ -11,30 +11,34 @@ conn = psycopg.connect(
 
 @app.route('/')
 def home():
+    if "user_id" in session:
+        return redirect(url_for('levels'))
+    session.clear()
     return render_template('login.html')
 
 @app.route('/giveUp')
 def giveUp():
-    with conn.cursor() as cursor:
-        cursor.execute("SELECT lid, name FROM levels")
-        levels = cursor.fetchall()
+    if "user_id" not in session:
+        return redirect(url_for('home'))
 
     session["level_id"] = None
-    return render_template('levels.html', levels=levels)
+    return redirect(url_for('levels'))
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return render_template('login.html')
+    return redirect(url_for('home'))
 
 @app.route('/register')
 def register():
+    if "user_id" in session:
+        return redirect(url_for('levels'))
+    session.clear()
     return render_template('register.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-    session["level_id"] = None
-    session["user_id"] = None
+    session.clear()
     username = request.form['username']
     password = request.form['password']
 
@@ -56,6 +60,7 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
+    session.clear()
     username = request.form['username']
     password = request.form['password']
     confirm_password = request.form['confirm_password']
@@ -84,6 +89,8 @@ def signup():
 
 @app.route('/game', methods=['POST'])
 def game():
+    if "user_id" not in session:
+        return redirect(url_for('home'))
     if request.method == 'POST':
         session["level_id"] = request.form['level']
         session["start_time"] = datetime.now().timestamp()
@@ -91,6 +98,8 @@ def game():
 
 @app.route('/init', methods=['POST'])
 def init():
+    if not session.get("user_id") or not session.get("level_id"):
+        return jsonify({"message": "Utilisateur ou niveau non spécifié"}), 401
     try:
         with conn.cursor() as cursor:
             cursor.execute(
@@ -107,8 +116,10 @@ def init():
 
 @app.route('/result', methods=['POST'])
 def result():
+    if "user_id" not in session:
+        return jsonify({"message": "Utilisateur non connecté"}), 401
     if not session.get("user_id") or not session.get("level_id"):
-        return jsonify({"message": "Utilisateur ou niveau non spécifié"})
+        return jsonify({"message": "Utilisateur ou niveau non spécifié"}), 400
 
     gridsubmit = request.form.get('grid', '').strip()
     if not gridsubmit:
@@ -158,6 +169,8 @@ def result():
 
 @app.route('/levels')
 def levels():
+    if "user_id" not in session:
+        return redirect(url_for('home'))
     with conn.cursor() as cursor:
         cursor.execute("SELECT lid, name FROM levels")
         levels = cursor.fetchall()
@@ -165,6 +178,8 @@ def levels():
 
 @app.route('/scores')
 def global_scores():
+    if "user_id" not in session:
+        return redirect(url_for('home'))
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
@@ -181,6 +196,8 @@ def global_scores():
 
 @app.route('/scores/<int:lid>')
 def level_scores(lid):
+    if "user_id" not in session:
+        return redirect(url_for('home'))
     try:
         with conn.cursor() as cursor:
             cursor.execute("SELECT name FROM levels WHERE lid = %s", (lid,))
@@ -203,6 +220,8 @@ def level_scores(lid):
 
 @app.route('/level-image/<int:lid>')
 def level_image(lid):
+    if "user_id" not in session:
+        return redirect(url_for('home'))
     with conn.cursor() as cursor:
         cursor.execute("SELECT completion_time FROM scores WHERE uid = %s AND lid = %s", (session["user_id"], lid))
         score = cursor.fetchone()
