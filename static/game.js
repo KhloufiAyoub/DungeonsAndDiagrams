@@ -27,8 +27,6 @@ function loadGame(){
         } else if (xhr.status === 401) {
             console.log("test")
             window.location.href = "/"; // Rediriger vers la page de connexion
-        } else {
-            console.error("Erreur lors du chargement du jeu:", xhr.status);
         }
     }
     xhr.open("POST",url,true);
@@ -93,8 +91,9 @@ function initializeGrid(str) {
                                 cell.classList.add('floor');
                                 cell.classList.remove('wall');
                             }
+                            grid[Math.floor(i / 8)][i % 8] = 0;
                         }
-                        grid[Math.floor(i / 8)][i % 8] = 0;
+
                     }
                     var id = cell.id.split(";")
                     UpdateNumbers(id[0], id[1])
